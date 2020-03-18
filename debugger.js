@@ -31,12 +31,13 @@ var Ody_Debugger = null;
             }
 
             this.initDebuggerPreferenceHandlers();
+            this.pref_DebuggerEnabled && this.findDuplicatedIDs();
         }
 
         /**
          * Find duplicated element IDs and log them.
          */
-        findDuplicatedIDs() {
+        findDuplicatedIDs(aOnDemand) {
             let idsSet = new Set();
             let duplicatedIDs = [];
             let all = document.querySelectorAll("[id]");
@@ -53,6 +54,8 @@ var Ody_Debugger = null;
 
             if (duplicatedIDs.length > 0) {
                 console.error("Duplicated IDs found: " + duplicatedIDs.length + "\n" + duplicatedIDs.join("\n"));
+            } else {
+                aOnDemand && console.info("No duplicated IDs were found.");
             }
         }
 
