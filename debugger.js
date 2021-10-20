@@ -126,11 +126,11 @@
         const debouncedFindDuplicatedIDs = Ody_Core.debounce(Ody_Core.findDuplicatedIDs, 500);
 
         const observerCallback = function(aMutationsList, aObserver) { // jshint ignore:line
-            for (const mutation of aMutationsList) {
-                if (mutation.type === "childList" || mutation.type === "characterData") {
+            Ody_Core.arrayEach(aMutationsList, (aMutation) => {
+                if (aMutation.type === "childList" || aMutation.type === "characterData") {
                     debouncedFindDuplicatedIDs();
                 }
-            }
+            });
         };
 
         const observer = new MutationObserver(observerCallback);
