@@ -101,7 +101,7 @@
             }
 
             const codeBlocks = aContainer.querySelectorAll(selectors);
-            arrayEach([...codeBlocks], (aEl) => {
+            arrayEach(codeBlocks, (aEl) => {
                 window.setTimeout(highlightCodeBlock, 10, aEl);
             });
         }
@@ -182,7 +182,7 @@
         if (typeof aSelectorsOrElements === "string") {
             const els = document.querySelectorAll(aSelectorsOrElements);
 
-            arrayEach([...els], (aEl) => {
+            arrayEach(els, (aEl) => {
                 _toggleClasses(aEl, aClassesToRemove, aClassesToAdd);
             });
         } else {
@@ -327,20 +327,20 @@
      * @return {Object} A new object, containing the merged parameters from aParams and aDefaults.
      */
     function parseParams(aParams, aDefaults, aAllowExtras) {
-        let ret = {};
+        const ret = {};
 
         if (!aParams) {
             return Object.assign({}, aDefaults);
         }
 
-        for (let prop in aParams) {
+        for (const prop in aParams) {
             if (!(prop in aDefaults) && !aAllowExtras) {
                 throw new Error('Unrecognized parameter "' + prop + '"');
             }
             ret[prop] = aParams[prop];
         }
 
-        for (let prop in aDefaults) {
+        for (const prop in aDefaults) {
             if (!(prop in aParams)) {
                 ret[prop] = aDefaults[prop];
             }
@@ -355,19 +355,19 @@
      * @param {Boolean} aInform - Inform about no duplicates found.
      */
     function findDuplicatedIDs(aInform = false) {
-        let idsSet = new Set();
-        let duplicatedIDs = [];
-        let all = document.querySelectorAll("[id]");
+        const idsSet = new Set();
+        const duplicatedIDs = [];
+        const all = document.querySelectorAll("[id]");
 
-        for (let i = all.length - 1; i >= 0; i--) {
-            let id = all[i].id;
+        arrayEach(all, (aEl) => {
+            const id = aEl.id;
 
             if (idsSet.has(id)) {
                 duplicatedIDs.push(id);
             } else {
                 idsSet.add(id);
             }
-        }
+        });
 
         if (duplicatedIDs.length > 0) {
             console.warn("Duplicated IDs found: " + duplicatedIDs.length + "\n" + duplicatedIDs.join("\n"));
@@ -382,7 +382,7 @@
      * @param {Array}    aObj      - Array to be iterated.
      * @param {Function} aCallback - The function to call on every iteration. The arguments
      *                               passed to aCallback will be (Element, Index).
-     * @param {Boolean}  aReverse  - Whether to iterate in reverse. Only applies to arrays.
+     * @param {Boolean}  aReverse  - Whether to iterate in reverse.
      */
     function arrayEach(aObj, aCallback, aReverse = false) {
         if (aReverse) {
@@ -408,7 +408,7 @@
      *
      * @param  {Object}   aObj      - Object to be iterated.
      * @param  {Function} aCallback - The function to call on every iteration. The arguments passed
-     *                                to aCallback will be (Key, Value).
+     *                                to aCallback will be (Key, Value, Index, Length).
      */
     function objectEach(aObj, aCallback) {
         const keys = Object.keys(aObj);
@@ -416,7 +416,7 @@
         const iLen = keys.length;
         for (; i < iLen; i++) {
             const key = keys[i];
-            if (aCallback.call(null, key, aObj[key]) === false) {
+            if (aCallback.call(null, key, aObj[key], i, iLen) === false) {
                 break;
             }
         }
@@ -460,9 +460,7 @@
 
                 // The call to `delayedToggleBackToTopButtonVisibility` uses debounce to
                 // avoid overhead when scrolling.
-                window.addEventListener("scroll", () => {
-                    this.delayedToggleBackToTopButtonVisibility();
-                }, false);
+                window.addEventListener("scroll", this.delayedToggleBackToTopButtonVisibility.bind(this), false);
 
                 this._toTopOfPageButton.setAttribute("data-button-handled", true);
             }
@@ -487,7 +485,7 @@
          * Prevent empty links from modifying URL bar.
          */
         document.addEventListener("click", function emptyLinksHandler(aE) {
-            let source = aE.target;
+            const source = aE.target;
 
             if (source &&
                 source.tagName.toLowerCase() === "a" &&
