@@ -48,7 +48,7 @@
                             }).tooltip();
 
                         // Workaround for Firefox in Linux. ¬¬
-                        Ody_Core.arrayEach([...aContainer.getElementsByClassName("modal")], (aModal) => {
+                        Ody_Core.arrayEach(aContainer.getElementsByClassName("modal"), (aModal) => {
                             aModal.addEventListener("keyup", (aE) => {
                                 if (aE.keyCode === 27) { // Escape key.
                                     $(aE.target).modal("hide");
@@ -58,12 +58,12 @@
                         break;
                     case "5":
                         Ody_Core.arrayEach(
-                            [...aContainer.querySelectorAll('[data-bs-toggle="popover"], .bootstrap-popover')],
+                            aContainer.querySelectorAll('[data-bs-toggle="popover"], .bootstrap-popover'),
                             (aEl) => {
                                 window.bootstrap.Popover.getOrCreateInstance(aEl);
                             });
                         Ody_Core.arrayEach(
-                            [...aContainer.querySelectorAll('[data-bs-toggle="tooltip"], .bootstrap-tooltip')],
+                            aContainer.querySelectorAll('[data-bs-toggle="tooltip"], .bootstrap-tooltip'),
                             (aEl) => {
                                 window.bootstrap.Tooltip.getOrCreateInstance(aEl);
                                 aEl.addEventListener("click", (aE) => {
@@ -73,7 +73,7 @@
                                     }, 20);
                                 }, false);
                             });
-                        Ody_Core.arrayEach([...aContainer.getElementsByClassName("modal")], (aModal) => {
+                        Ody_Core.arrayEach(aContainer.getElementsByClassName("modal"), (aModal) => {
                             aModal.addEventListener("keyup", (aE) => {
                                 if (aE.keyCode === 27) { // Escape key.
                                     const modal = window.bootstrap.Modal.getOrCreateInstance(aE.target);
