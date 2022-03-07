@@ -97,3 +97,5 @@
 /* global define,
           globalThis
  */
+
+/* jshint browser: true */

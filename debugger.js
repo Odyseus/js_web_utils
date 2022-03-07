@@ -256,3 +256,5 @@
           define,
           globalThis
  */
+
+/* jshint browser: true */
