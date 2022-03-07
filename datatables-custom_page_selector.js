@@ -7,6 +7,8 @@ $.fn.dataTable.CustomPageSelector = function(aTableSettings, aExtraSettings = {
     containerClasses: [],
     selectClasses: []
 }) {
+    const table = new $.fn.dataTable.Api(aTableSettings);
+
     let selectContainer = document.createElement("div");
     selectContainer.classList.add("data-tables-page-selector-container");
 
@@ -26,6 +28,29 @@ $.fn.dataTable.CustomPageSelector = function(aTableSettings, aExtraSettings = {
     select.setAttribute("data-table-id", aTableSettings.nTable.id);
     selectContainer.appendChild(select);
 
+    // Populate select on table draw.
+    table.on("draw", Ody_Core.debounce(() => {
+        // Get current page and total pages.
+        const tablePagesCount = table.page.info().pages;
+        const currentPage = table.page.info().page;
+
+        // Update select options if number of pages has changed.
+        if (select.options.length !== tablePagesCount) {
+            select.options.length = 0; // Clear the select content.
+            // NOTE: [...Array(tablePagesCount).keys()] seems to be the equivalent to
+            // Python's list(range(0, tablePagesCount)).
+            // <3 https://stackoverflow.com/a/10050831
+            Ody_Core.arrayEach([...Array(tablePagesCount).keys()], (aPageIndex) => {
+                let opt = document.createElement("option");
+                opt.text = aPageIndex + 1;
+                opt.value = aPageIndex + 1;
+                select.add(opt, null);
+            });
+        }
+
+        select.value = currentPage + 1;
+    }, 500));
+
     select.addEventListener("change", (aE) => {
         window.scroll(0, 0);
 
@@ -35,11 +60,10 @@ $.fn.dataTable.CustomPageSelector = function(aTableSettings, aExtraSettings = {
             return;
         }
 
-        let table = new $.fn.dataTable.Api(aTableSettings);
         table.page(parseInt(val, 10) - 1).draw(false); // false to remain on page.
     }, false);
 
-    this.node = function() {
+    this.node = () => {
         return selectContainer;
     };
 
@@ -77,3 +101,8 @@ $.fn.DataTable.CustomPageSelector = $.fn.dataTable.CustomPageSelector;
 //     },
 //     cFeature: "S"
 // });
+
+/* global Ody_Core
+ */
+
+/* jshint browser: true */
