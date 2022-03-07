@@ -381,22 +381,22 @@
      *
      * @param {Array}    aObj      - Array to be iterated.
      * @param {Function} aCallback - The function to call on every iteration. The arguments
-     *                               passed to aCallback will be (Element, Index).
+     *                               passed to aCallback will be (Element, Index, Length).
      * @param {Boolean}  aReverse  - Whether to iterate in reverse.
      */
     function arrayEach(aObj, aCallback, aReverse = false) {
+        const iLen = aObj.length;
+
         if (aReverse) {
-            let i = aObj.length;
-            while (i--) {
-                if (aCallback.call(null, aObj[i], i) === false) {
+            for (let i = iLen - 1; i > -1; i--) {
+                if (aCallback.call(null, aObj[i], i, iLen) === false) {
                     break;
                 }
             }
         } else {
             let i = 0;
-            const iLen = aObj.length;
             for (; i < iLen; i++) {
-                if (aCallback.call(null, aObj[i], i) === false) {
+                if (aCallback.call(null, aObj[i], i, iLen) === false) {
                     break;
                 }
             }
@@ -412,8 +412,8 @@
      */
     function objectEach(aObj, aCallback) {
         const keys = Object.keys(aObj);
-        let i = 0;
         const iLen = keys.length;
+        let i = 0;
         for (; i < iLen; i++) {
             const key = keys[i];
             if (aCallback.call(null, key, aObj[key], i, iLen) === false) {
@@ -441,7 +441,6 @@
         set toTopOfPageButton(aVal) {
             this._toTopOfPageButton = aVal;
         }
-
 
         /**
          * Handle to Back to top button.
@@ -521,3 +520,5 @@
 /* global define,
           globalThis
  */
+
+/* jshint browser: true */
