@@ -284,7 +284,7 @@
             });
         } else if ("requestAnimationFrame" in window) {
             tryFn(() => {
-                const currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
+                const currentScroll = window.scrollY || window.pageYOffset;
                 if (currentScroll > 0) {
                     window.requestAnimationFrame(smoothScrollToTop);
                     window.scrollTo(0, currentScroll - (currentScroll / 5));
